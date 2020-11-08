@@ -25,44 +25,54 @@ import com.tlcn.thebeats.repository.CartItemRepository;
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/v1/cart")
 public class CartController {
-	
+
 	@Autowired
 	private CartItemRepository cartItemRepository;
-	
+
 	@GetMapping("/all")
-	public List<CartItem> getAllCart()
-	{
+	public List<CartItem> getAllCart() {
 		return cartItemRepository.findAll();
+	}
+	
+	@GetMapping("/{userId}")
+	public List<CartItem> getUserCart(@PathVariable int userId)
+	{
+		return this.cartItemRepository.findByUserId(userId);
 	}
 
 	@PostMapping("/addtocart")
-	public CartItem addToCart(@RequestBody AddToCartRequest addToCartRequest)
-	{
-		Optional<CartItem> item = cartItemRepository.findByUserIdAndSongId(addToCartRequest.getUserId(), addToCartRequest.getSongId());
-		
-		if(!item.isPresent())
-		{
-			CartItem cartItem = new CartItem(new Date(), addToCartRequest.getUserId(), 
-					addToCartRequest.getPrice(), addToCartRequest.getSongId(), addToCartRequest.getSongName());
-			return cartItemRepository.save(cartItem);
+	public int addToCart(@RequestBody AddToCartRequest addToCartRequest) {
+		Optional<CartItem> item = cartItemRepository.findByUserIdAndSongId(addToCartRequest.getUserId(),
+				addToCartRequest.getSongId());
 
-		}
-		
-		cartItemRepository.delete(item.get());
-		
-		return null;
-		
+		if (!item.isPresent()) {
+			CartItem cartItem = new CartItem(new Date(), addToCartRequest.getUserId(), addToCartRequest.getPrice(),
+					addToCartRequest.getSongId(), addToCartRequest.getSongName());
+			cartItemRepository.save(cartItem);
+
+		} else
+
+			cartItemRepository.delete(item.get());
+
+		return cartItemRepository.countByUserId(addToCartRequest.getUserId());
+
 	}
 	
-	@DeleteMapping("/delete/{cartId}")
-	public Map<String, Boolean> removeItem(@PathVariable int cartId)
+	@GetMapping("/count/{userId}")
+	public int getTotalItem(@PathVariable int userId)
 	{
+		return cartItemRepository.countByUserId(userId);
+	}
+
+	@DeleteMapping("/delete/{cartId}")
+	public Map<String, Boolean> removeItem(@PathVariable int cartId) {
 		Optional<CartItem> item = cartItemRepository.findById(cartId);
-		if(!item.isPresent()) throw new RuntimeException("Item not found");
+		if (!item.isPresent())
+			throw new RuntimeException("Item not found");
 		cartItemRepository.deleteById(cartId);
 		Map<String, Boolean> respone = new HashMap<String, Boolean>();
 		respone.put("deleted", true);
 		return respone;
-		
+
 	}
 }

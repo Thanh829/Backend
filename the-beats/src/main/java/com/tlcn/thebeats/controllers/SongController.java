@@ -95,10 +95,10 @@ public class SongController {
 	    //return new String(id);
 	}
 	@GetMapping("/{id}")
-	public Optional<Song> getVideo(@PathVariable long id) throws Exception {
+	public Song getVideo(@PathVariable long id) throws Exception {
 	    Optional<Song> video = songRepo.findById(id);
 	
-	    return video;
+	    return video.get();
 	}
 	
 	

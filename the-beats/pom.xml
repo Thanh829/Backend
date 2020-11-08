@@ -12,6 +12,7 @@
 	<groupId>com.tlcn</groupId>
 	<artifactId>the-beats</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<name>the-beats</name>
 	<description>Demo project for Spring Boot</description>
 

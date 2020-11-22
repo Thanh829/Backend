@@ -12,6 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+
+
 
 
 
@@ -22,6 +25,8 @@ public class Song {
 	private long id;
 	private String title;
 	private String url;
+	private double price;
+	
 	
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(	name = "song_tags", 
@@ -29,6 +34,9 @@ public class Song {
 				inverseJoinColumns = @JoinColumn(name = "tag_id"))
 	private Set<Tag> tags = new HashSet<>();
 	//private List<String> tags;
+	
+	
+
 
 	public String getTitle() {
 		return title;
@@ -56,10 +64,19 @@ public class Song {
 
 	
 
-	public Song(String title, String url) {
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
+
+	public Song(String title, String url, double price) {
 		super();
 		this.title = title;
 		this.url = url;
+		this.price=price;
 		
 	}
 	
@@ -71,6 +88,8 @@ public class Song {
 	public void setTags(Set<Tag> tags) {
 		this.tags = tags;
 	}
+
+	
 
 	public Song() {
 	};

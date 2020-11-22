@@ -1,5 +1,6 @@
 package com.tlcn.thebeats.payload.response;
 
+import java.util.Date;
 import java.util.List;
 
 public class JwtResponse {
@@ -8,15 +9,28 @@ public class JwtResponse {
 	private Long id;
 	private String username;
 	private String email;
+	private long timeExpire;
 	private List<String> roles;
 
-	public JwtResponse(String accessToken, Long id, String username, String email, List<String> roles) {
+	public JwtResponse(String accessToken, Long id, String username, String email, List<String> roles, long timeExpire) {
 		this.token = accessToken;
 		this.id = id;
 		this.username = username;
 		this.email = email;
 		this.roles = roles;
+		this.timeExpire=timeExpire;
 	}
+
+	
+	public long getTimeExpire() {
+		return timeExpire;
+	}
+
+
+	public void setTimeExpire(long timeExpire) {
+		this.timeExpire = timeExpire;
+	}
+
 
 	public String getAccessToken() {
 		return token;

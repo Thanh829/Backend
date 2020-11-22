@@ -12,7 +12,6 @@ public class Tag {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonIgnore
 	private int id;
 	private String title;
 	
@@ -28,6 +27,15 @@ public class Tag {
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+	
 	
 	
 	

@@ -53,9 +53,30 @@ public class SongController {
 		return pageSong.getContent();
 		
 	}
+	
+	@GetMapping("/getAllByTag")
+	public List<Song> getAllByTag(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "4") int size, @RequestParam int tagId)
+	{
+		Pageable paging = PageRequest.of(page, size);
+		Page<Song> pageSong= songRepo.findAllByTagTagId(tagId,paging);
+		return pageSong.getContent();
+		
+	}
+	
+	@GetMapping("/countbytag")
+	public long CountSongByTag(@RequestParam int tagId)
+	{
+		return songRepo.countSong(tagId);
+	}
+	
+	@GetMapping("/count")
+	public long CountSong()
+	{
+		return songRepo.count();
+	}
 	@PostMapping("/add")
 	public Song addVideo(@RequestParam String title, @RequestParam("tags[]") Set<String> tags,
-	  @RequestParam("song") MultipartFile file) throws IOException {
+	  @RequestParam("song") MultipartFile file, @RequestParam double price) throws IOException {
 	    //String id = videoService.addVideo(title, file);
 		String url= amazonS3ClientService.uploadFileToS3Bucket(file, true);
 		Set<Tag> listTag= new HashSet<>();
@@ -67,33 +88,33 @@ public class SongController {
 				listTag.add(tagName.get());
 			});
 		}
-		Song song = new Song(title, url);
+		Song song = new Song(title, url,price);
 		song.setTags(listTag);
 		
 	    return songRepo.save(song);
 	    //return new String(id);
 	}
 	
-	@PostMapping("/addsong")
-	public Song addSong(@RequestBody addSongRequest request) throws IOException {
-	    //String id = videoService.addVideo(title, file);
-		String url= amazonS3ClientService.uploadFileToS3Bucket(request.getSong(), true);
-		Set<Tag> listTag= new HashSet<>();
-		Set<String> tags= request.getTags();
-		if(tags.size()!=0)
-		{
-			tags.forEach(tag ->{
-				Optional<Tag> tagName= tagRepo.findByTitle(tag);
-				if(!tagName.isPresent()) throw new RuntimeException("Error: tag is not found.");
-				listTag.add(tagName.get());
-			});
-		}
-		Song song = new Song(request.getTitle(), url);
-		song.setTags(listTag);
-		
-	    return songRepo.save(song);
-	    //return new String(id);
-	}
+//	@PostMapping("/addsong")
+//	public Song addSong(@RequestBody addSongRequest request) throws IOException {
+//	    //String id = videoService.addVideo(title, file);
+//		String url= amazonS3ClientService.uploadFileToS3Bucket(request.getSong(), true);
+//		Set<Tag> listTag= new HashSet<>();
+//		Set<String> tags= request.getTags();
+//		if(tags.size()!=0)
+//		{
+//			tags.forEach(tag ->{
+//				Optional<Tag> tagName= tagRepo.findByTitle(tag);
+//				if(!tagName.isPresent()) throw new RuntimeException("Error: tag is not found.");
+//				listTag.add(tagName.get());
+//			});
+//		}
+//		Song song = new Song(request.getTitle(), url);
+//		song.setTags(listTag);
+//		
+//	    return songRepo.save(song);
+//	    //return new String(id);
+//	}
 	@GetMapping("/{id}")
 	public Song getVideo(@PathVariable long id) throws Exception {
 	    Optional<Song> video = songRepo.findById(id);

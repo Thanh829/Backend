@@ -37,6 +37,10 @@ public class JwtUtils {
 	public String getUserNameFromJwtToken(String token) {
 		return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
 	}
+	
+	public Date getTimeExpireFromJwtToken(String token) {
+		return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getExpiration();
+	}
 
 	public boolean validateJwtToken(String authToken) {
 		try {

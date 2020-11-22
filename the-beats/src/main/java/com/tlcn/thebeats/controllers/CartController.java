@@ -14,12 +14,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tlcn.thebeats.models.CartItem;
+import com.tlcn.thebeats.models.User;
 import com.tlcn.thebeats.payload.request.AddToCartRequest;
 import com.tlcn.thebeats.repository.CartItemRepository;
+import com.tlcn.thebeats.repository.UserRepository;
+import com.tlcn.thebeats.security.jwt.JwtUtils;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -28,16 +32,26 @@ public class CartController {
 
 	@Autowired
 	private CartItemRepository cartItemRepository;
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private JwtUtils jwtUtils;
 
 	@GetMapping("/all")
 	public List<CartItem> getAllCart() {
 		return cartItemRepository.findAll();
 	}
 	
-	@GetMapping("/{userId}")
-	public List<CartItem> getUserCart(@PathVariable int userId)
+	@GetMapping("/")
+	public List<CartItem> getUserCart(@RequestHeader (name="Authorization") String token)
 	{
-		return this.cartItemRepository.findByUserId(userId);
+		System.out.print(token);
+		String username = jwtUtils.getUserNameFromJwtToken(token.substring(7, token.length()));
+		Optional<User> user = userRepository.findByUsername(username);
+		if(user.isPresent())
+			return this.cartItemRepository.findByUserId(user.get().getId().intValue());
+		else throw new RuntimeException("User not found");
 	}
 
 	@PostMapping("/addtocart")
@@ -58,10 +72,14 @@ public class CartController {
 
 	}
 	
-	@GetMapping("/count/{userId}")
-	public int getTotalItem(@PathVariable int userId)
+	@GetMapping("/count")
+	public int getTotalItem(@RequestHeader (name="Authorization") String token)
 	{
-		return cartItemRepository.countByUserId(userId);
+		String username = jwtUtils.getUserNameFromJwtToken(token.substring(7, token.length()));
+		Optional<User> user = userRepository.findByUsername(username);
+		if(user.isPresent())
+			return cartItemRepository.countByUserId(user.get().getId().intValue());
+		else throw new RuntimeException("User not found");
 	}
 
 	@DeleteMapping("/delete/{cartId}")

@@ -23,16 +23,20 @@ import java.io.IOException;
 public class AmazonS3ClientServiceImpl implements AmazonS3ClientService 
 {
     private String awsS3AudioBucket;
+    private String awsS3ImageBucket;
     private AmazonS3 amazonS3;
     private static final Logger logger = LoggerFactory.getLogger(AmazonS3ClientServiceImpl.class);
 
     @Autowired
-    public AmazonS3ClientServiceImpl(Region awsRegion, AWSCredentialsProvider awsCredentialsProvider, String awsS3AudioBucket) 
+    public AmazonS3ClientServiceImpl(Region awsRegion, AWSCredentialsProvider awsCredentialsProvider, String awsS3AudioBucket,
+    		String awsS3ImageBucket) 
     {
         this.amazonS3 = AmazonS3ClientBuilder.standard()
                 .withCredentials(awsCredentialsProvider)
                 .withRegion(awsRegion.getName()).build();
         this.awsS3AudioBucket = awsS3AudioBucket;
+        this.awsS3ImageBucket= awsS3ImageBucket;
+        
     }
 
     @Async
@@ -57,6 +61,34 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService
             //removing the file created in the server
             file.delete();
             return this.amazonS3.getUrl(this.awsS3AudioBucket, fileName).toString();
+        } catch (IOException | AmazonServiceException ex) {
+            logger.error("error [" + ex.getMessage() + "] occurred while uploading [" + fileName + "] ");
+            return "error [" + ex.getMessage() + "] occurred while uploading [" + fileName + "] ";
+        }
+    }
+    
+    @Async
+    public String uploadImageToS3Bucket(MultipartFile multipartFile, boolean enablePublicReadAccess) 
+    {
+        String fileName = multipartFile.getOriginalFilename();
+
+        try {
+            //creating the file in the server (temporarily)
+            File file = new File(fileName);
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(multipartFile.getBytes());
+            fos.close();
+
+            PutObjectRequest putObjectRequest = new PutObjectRequest(this.awsS3ImageBucket, fileName, file);
+
+            if (enablePublicReadAccess) {
+                putObjectRequest.withCannedAcl(CannedAccessControlList.PublicRead);
+            }
+            this.amazonS3.putObject(putObjectRequest);
+            
+            //removing the file created in the server
+            file.delete();
+            return this.amazonS3.getUrl(this.awsS3ImageBucket, fileName).toString();
         } catch (IOException | AmazonServiceException ex) {
             logger.error("error [" + ex.getMessage() + "] occurred while uploading [" + fileName + "] ");
             return "error [" + ex.getMessage() + "] occurred while uploading [" + fileName + "] ";

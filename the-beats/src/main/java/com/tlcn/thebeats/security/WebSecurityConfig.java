@@ -57,7 +57,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.cors().and().csrf().disable()
 			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-			.authorizeRequests().antMatchers("/api/v1/auth/**","/api/v1/tag/**","/api/v1/playlist/**","/api/v1/songs/**","/pay/**").permitAll()
+			.authorizeRequests().antMatchers("/api/v1/auth/**","/api/v1/tag/**","/api/v1/playlist/**",
+					"/api/v1/songs/**","/auth/artist/signup","/auth/artist/signin","/pay/**","/api/test/all").permitAll()
 			.antMatchers("/api/test/**").permitAll()
 			.anyRequest().authenticated();
 

@@ -20,9 +20,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.tlcn.thebeats.models.Artist;
+import com.tlcn.thebeats.models.ImageFile;
 import com.tlcn.thebeats.models.Song;
 import com.tlcn.thebeats.models.Tag;
 import com.tlcn.thebeats.payload.request.addSongRequest;
+import com.tlcn.thebeats.repository.ArtistRepository;
+import com.tlcn.thebeats.repository.ImageFileRepository;
 import com.tlcn.thebeats.repository.SongRepository;
 import com.tlcn.thebeats.repository.TagRepository;
 import com.tlcn.thebeats.security.services.AmazonS3ClientService;
@@ -36,6 +40,11 @@ public class SongController {
 	private AmazonS3ClientService amazonS3ClientService;
 	@Autowired
 	private SongRepository songRepo;
+	@Autowired
+	private ImageFileRepository imageFileRepository;
+	
+	@Autowired
+	private ArtistRepository artistRepository;
 	@Autowired
 	private TagRepository tagRepo;
 	
@@ -72,13 +81,15 @@ public class SongController {
 	@GetMapping("/count")
 	public long CountSong()
 	{
-		return songRepo.count();
+		long count=songRepo.count();
+		return count;
 	}
 	@PostMapping("/add")
-	public Song addVideo(@RequestParam String title, @RequestParam("tags[]") Set<String> tags,
-	  @RequestParam("song") MultipartFile file, @RequestParam double price) throws IOException {
+	public ImageFile addSong(@RequestParam String title, @RequestParam("tags[]") Set<String> tags,
+	  @RequestParam("song") MultipartFile file,@RequestParam("image") MultipartFile imageFile, @RequestParam double price) throws IOException {
 	    //String id = videoService.addVideo(title, file);
 		String url= amazonS3ClientService.uploadFileToS3Bucket(file, true);
+		String urlImage= amazonS3ClientService.uploadImageToS3Bucket(imageFile, true);
 		Set<Tag> listTag= new HashSet<>();
 		if(tags.size()!=0)
 		{
@@ -88,10 +99,18 @@ public class SongController {
 				listTag.add(tagName.get());
 			});
 		}
-		Song song = new Song(title, url,price);
-		song.setTags(listTag);
 		
-	    return songRepo.save(song);
+		Song song = new Song(title, url,price);
+		
+		song.setTags(listTag);
+		Artist artist= artistRepository.findById( 1).orElseThrow(()->new RuntimeException("artist not found"));
+		song.setArtist(artist);
+		song.setAvatarImage(urlImage);
+		
+		Song songSaved =songRepo.save(song);
+		ImageFile image= new ImageFile(urlImage, songSaved.getId());
+		
+	    return imageFileRepository.save(image);
 	    //return new String(id);
 	}
 	

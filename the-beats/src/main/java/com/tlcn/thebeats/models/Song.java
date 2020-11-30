@@ -14,6 +14,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 
 
@@ -33,10 +35,23 @@ public class Song {
 				joinColumns = @JoinColumn(name = "song_id"), 
 				inverseJoinColumns = @JoinColumn(name = "tag_id"))
 	private Set<Tag> tags = new HashSet<>();
+	
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY,optional = false)
+	private Artist artist;
 	//private List<String> tags;
+	private String avatarImage;
 	
 	
 
+
+	public String getAvatarImage() {
+		return avatarImage;
+	}
+
+	public void setAvatarImage(String avatarImage) {
+		this.avatarImage = avatarImage;
+	}
 
 	public String getTitle() {
 		return title;
@@ -80,6 +95,18 @@ public class Song {
 		
 	}
 	
+
+	public Artist getArtist() {
+		return artist;
+	}
+
+	public void setArtist(Artist artist) {
+		this.artist = artist;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
 
 	public Set<Tag> getTags() {
 		return tags;

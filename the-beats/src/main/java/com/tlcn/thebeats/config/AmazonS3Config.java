@@ -25,6 +25,10 @@ public class AmazonS3Config
 
     @Value("${aws.s3.audio.bucket}")
     private String awsS3AudioBucket;
+    
+    @Value("${aws.s3.image.bucket}")
+    private String awsS3ImageBucket;
+
 
     @Bean(name = "awsKeyId")
     public String getAWSKeyId() {
@@ -51,4 +55,11 @@ public class AmazonS3Config
     public String getAWSS3AudioBucket() {
         return awsS3AudioBucket;
     }
+    
+    @Bean(name = "awsS3ImageBucket")
+    public String getAWSS3ImageBucket() {
+        return awsS3ImageBucket;
+    }
+    
+    
 }

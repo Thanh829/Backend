@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,9 +20,25 @@ public class Artist{
 	
 	private String avatar;
 	private String coverImageId;
-	@OneToMany(mappedBy = "artist")
+	private String artistName;
+	private boolean isActive;
+	
+	
+	public boolean isActive() {
+		return isActive;
+	}
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+	@OneToMany(mappedBy = "artist",fetch = FetchType.LAZY)
 	private List<Song> songs;
 	
+	public String getArtistName() {
+		return artistName;
+	}
+	public void setArtistName(String artistName) {
+		this.artistName = artistName;
+	}
 	private long userId;
 	public double getPayslip() {
 		return payslip;

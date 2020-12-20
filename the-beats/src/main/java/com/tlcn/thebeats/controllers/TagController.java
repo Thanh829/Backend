@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tlcn.thebeats.models.Tag;
+import com.tlcn.thebeats.payload.request.EditTagRequest;
 import com.tlcn.thebeats.repository.TagRepository;
 
 @RestController
@@ -40,6 +41,16 @@ public class TagController {
 	public void deleteTag(@PathVariable int id)
 	{
 		tagRepo.deleteById(id);
+	}
+	
+	@PostMapping("/edit")
+	public Tag editTag(@RequestBody EditTagRequest editTagRequest)
+	{
+		Tag tag = tagRepo.findById(editTagRequest.getId()).orElseThrow(()-> new RuntimeException("Tag not found"));
+		
+		tag.setTitle(editTagRequest.getTitle());
+		return tagRepo.save(tag);
+		
 	}
 
 }

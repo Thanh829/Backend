@@ -62,6 +62,7 @@ public class CartController {
 		if (!item.isPresent()) {
 			CartItem cartItem = new CartItem(new Date(), addToCartRequest.getUserId(), addToCartRequest.getPrice(),
 					addToCartRequest.getSongId(), addToCartRequest.getSongName());
+			cartItem.setAvatar(addToCartRequest.getAvatar());
 			cartItemRepository.save(cartItem);
 
 		} else

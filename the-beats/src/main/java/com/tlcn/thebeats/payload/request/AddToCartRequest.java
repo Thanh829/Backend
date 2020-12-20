@@ -9,8 +9,16 @@ public class AddToCartRequest {
 	private double price;
 	private int songId;
 	private String songName;
+	private String avatar;
 	
 	
+	
+	public String getAvatar() {
+		return avatar;
+	}
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
 	public int getUserId() {
 		return userId;
 	}

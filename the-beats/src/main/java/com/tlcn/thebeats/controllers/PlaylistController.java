@@ -64,7 +64,7 @@ public class PlaylistController {
 		return ResponseEntity.ok(updatedPlaylist);
 	}
 	
-	@PutMapping("/addtoplaylist")
+	@PostMapping("/addtoplaylist")
 	public Playlist addSongTopPlaylist(@RequestBody AddSongToPlaylistRequest addSongToPlaylistRequest)
 	{
 		Optional<Playlist> playlist = playlistRepository.findById(addSongToPlaylistRequest.getPlaylistId());

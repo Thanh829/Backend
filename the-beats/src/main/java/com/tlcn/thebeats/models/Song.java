@@ -16,10 +16,6 @@ import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-
-
-
-
 @Entity
 public class Song {
 	@Id
@@ -28,22 +24,26 @@ public class Song {
 	private String title;
 	private String url;
 	private double price;
-	
-	
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(	name = "song_tags", 
-				joinColumns = @JoinColumn(name = "song_id"), 
-				inverseJoinColumns = @JoinColumn(name = "tag_id"))
-	private Set<Tag> tags = new HashSet<>();
-	
-	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY,optional = false)
-	private Artist artist;
-	//private List<String> tags;
-	private String avatarImage;
-	
-	
+	private String artistName;
+	private boolean banned = false;
 
+	public String getArtistName() {
+		return artistName;
+	}
+
+	public void setArtistName(String artistName) {
+		this.artistName = artistName;
+	}
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "song_tags", joinColumns = @JoinColumn(name = "song_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
+	private Set<Tag> tags = new HashSet<>();
+
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	private Artist artist;
+	// private List<String> tags;
+	private String avatarImage;
 
 	public String getAvatarImage() {
 		return avatarImage;
@@ -73,12 +73,6 @@ public class Song {
 		return id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	
-
 	public double getPrice() {
 		return price;
 	}
@@ -91,10 +85,9 @@ public class Song {
 		super();
 		this.title = title;
 		this.url = url;
-		this.price=price;
-		
+		this.price = price;
+
 	}
-	
 
 	public Artist getArtist() {
 		return artist;
@@ -116,7 +109,13 @@ public class Song {
 		this.tags = tags;
 	}
 
-	
+	public boolean isBanned() {
+		return banned;
+	}
+
+	public void setBanned(boolean banned) {
+		this.banned = banned;
+	}
 
 	public Song() {
 	};

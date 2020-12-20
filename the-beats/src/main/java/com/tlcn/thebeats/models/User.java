@@ -34,6 +34,9 @@ public class User {
 	@NotBlank
 	@Size(max = 120)
 	private String password;
+	
+	private String code;
+	
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(	name = "user_roles", 
@@ -43,6 +46,12 @@ public class User {
 	
 	@OneToMany(mappedBy = "user")
 	private List<Playlist> playlist;
+	
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(	name = "user_song", 
+				joinColumns = @JoinColumn(name = "user_id"), 
+				inverseJoinColumns = @JoinColumn(name = "song_id"))
+	private Set<Song> songs = new HashSet<>();
 
 	public User() {
 	}
@@ -51,6 +60,16 @@ public class User {
 		this.username = username;
 		this.email = email;
 		this.password = password;
+	}
+	
+	
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	public Long getId() {
@@ -92,4 +111,22 @@ public class User {
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
+
+	public List<Playlist> getPlaylist() {
+		return playlist;
+	}
+
+	public void setPlaylist(List<Playlist> playlist) {
+		this.playlist = playlist;
+	}
+
+	public Set<Song> getSongs() {
+		return songs;
+	}
+
+	public void setSongs(Set<Song> songs) {
+		this.songs = songs;
+	}
+	
+	
 }

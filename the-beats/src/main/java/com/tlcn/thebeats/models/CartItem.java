@@ -19,8 +19,17 @@ public class CartItem {
 	private int orderId;
 	private double price;
 	private int songId;
+	private int artistId;
 	private String songName;
+	private String avatar;
 	
+	
+	public String getAvatar() {
+		return avatar;
+	}
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
 	public int getId() {
 		return id;
 	}
@@ -75,6 +84,21 @@ public class CartItem {
 	
 	
 	
+	public CartItem(Date dateAdded, int userId, double price, int songId, int artistId, String songName) {
+		super();
+		this.dateAdded = dateAdded;
+		this.userId = userId;
+		this.price = price;
+		this.songId = songId;
+		this.artistId = artistId;
+		this.songName = songName;
+	}
+	public int getArtistId() {
+		return artistId;
+	}
+	public void setArtistId(int artistId) {
+		this.artistId = artistId;
+	}
 	private CartItem() {};
 	
 	

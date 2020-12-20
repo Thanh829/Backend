@@ -12,6 +12,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Playlist {
 	
@@ -27,8 +29,9 @@ public class Playlist {
 					inverseJoinColumns = @JoinColumn(name = "song_id"))
 		private List<Song> listSong;
 		
-		@ManyToOne(fetch = FetchType.EAGER, optional = false)
+		@ManyToOne(fetch = FetchType.LAZY, optional = false)
 		@JoinColumn(name = "user_id", nullable = false)
+		@JsonIgnore
 		private User user;
 
 		

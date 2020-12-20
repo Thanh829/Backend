@@ -12,7 +12,22 @@ public class ImageFile {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	private String url;
-	private long songOrArtistOwnerId;
+	private long songOwnerId;
+	private long artistOwnerId;
+	
+	
+	public long getSongOwnerId() {
+		return songOwnerId;
+	}
+	public void setSongOwnerId(long songOwnerId) {
+		this.songOwnerId = songOwnerId;
+	}
+	public long getArtistOwnerId() {
+		return artistOwnerId;
+	}
+	public void setArtistOwnerId(long artistOwnerId) {
+		this.artistOwnerId = artistOwnerId;
+	}
 	public long getId() {
 		return id;
 	}
@@ -25,17 +40,15 @@ public class ImageFile {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	public long getSongOrArtistOwnerId() {
-		return songOrArtistOwnerId;
-	}
-	public void setSongOrArtistOwnerId(long songOrArtistOwnerId) {
-		this.songOrArtistOwnerId = songOrArtistOwnerId;
-	}
-	public ImageFile( String url, long songOrArtistOwnerId) {
+	
+	
+	public ImageFile(String url, long songOwnerId, long artistOwnerId) {
 		super();
 		this.url = url;
-		this.songOrArtistOwnerId = songOrArtistOwnerId;
+		this.songOwnerId=songOwnerId;
+		this.artistOwnerId = artistOwnerId;
 	}
+	
 	
 	public ImageFile() {};
 	

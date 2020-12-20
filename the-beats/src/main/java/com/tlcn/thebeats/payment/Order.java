@@ -13,9 +13,18 @@ public class Order {
 	private String method;
 	private String intent;
 	private String description;
+	private String emailPaypal;
+	private String successUrl;
 	
 	
 	
+	
+	public String getEmailPaypal() {
+		return emailPaypal;
+	}
+	public void setEmailPaypal(String emailPaypal) {
+		this.emailPaypal = emailPaypal;
+	}
 	public double getTotal() {
 		return total;
 	}
@@ -53,8 +62,15 @@ public class Order {
 		this.items = items;
 	}
 	
+	public String getSuccessUrl() {
+		return successUrl;
+	}
+	public void setSuccessUrl(String url) {
+		this.successUrl=url;
+	}
+	
 	public Order(List<CartItem> items, double total, String currency, String method, String intent,
-			String description) {
+			String description,String successUrl) {
 		super();
 		this.items = items;
 		this.total = total;
@@ -62,7 +78,10 @@ public class Order {
 		this.method = method;
 		this.intent = intent;
 		this.description = description;
+		this.successUrl = successUrl;
 	}
+	
+	
 	
 	
 

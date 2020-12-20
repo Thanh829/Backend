@@ -31,7 +31,7 @@ public class PaypalService {
 	private PaypalConfig paypalConfig;
 	
 	
-	public Payment createPayment(
+	public Payment createPayment(String emailPayee,
 			List<CartItem> items,
 			Double total, 
 			String currency, 
@@ -47,23 +47,26 @@ public class PaypalService {
 
 		ItemList itemList = new ItemList();
 		List<Item> list = new ArrayList<>();
-		for (CartItem cartItem : items) {
-			Item item = new Item();
-			item.setCurrency("USD");
-			item.setName(cartItem.getSongName());
-			item.setPrice( cartItem.getPrice()+"");
-			item.setQuantity("1");
-			list.add(item);
+		if(items!=null)
+		{
+			for (CartItem cartItem : items) {
+				Item item = new Item();
+				item.setCurrency("USD");
+				item.setName(cartItem.getSongName());
+				item.setPrice( cartItem.getPrice()+"");
+				item.setQuantity("1");
+				list.add(item);
+			}
+			itemList.setItems(list);
 		}
-		itemList.setItems(list);
 		
 		Transaction transaction = new Transaction();
 		transaction.setDescription(description);
 		transaction.setAmount(amount);
 		transaction.setItemList(itemList);
 		Payee payee= new Payee();
-		payee.setEmail("sb-43gsoj3559342@business.example.com");
-		payee.setMerchantId("RFN4S7JEBBLNN");
+		payee.setEmail(emailPayee);
+		//payee.setMerchantId("RFN4S7JEBBLNN");
 		transaction.setPayee(payee);
 		List<Transaction> transactions = new ArrayList<>();
 		transactions.add(transaction);

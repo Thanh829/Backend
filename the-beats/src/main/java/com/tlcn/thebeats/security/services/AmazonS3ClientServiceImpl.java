@@ -1,6 +1,7 @@
 package com.tlcn.thebeats.security.services;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.regions.Region;
@@ -15,10 +17,13 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
+import com.amazonaws.services.s3.model.S3Object;
 @Component
 public class AmazonS3ClientServiceImpl implements AmazonS3ClientService 
 {
@@ -103,5 +108,37 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService
         } catch (AmazonServiceException ex) {
             logger.error("error [" + ex.getMessage() + "] occurred while removing [" + fileName + "] ");
         }
+    }
+    @Override
+    public ByteArrayOutputStream downloadFile(String keyName) {
+      try {
+              S3Object s3object = amazonS3.getObject(new GetObjectRequest(awsS3AudioBucket, keyName));
+              
+              InputStream is = s3object.getObjectContent();
+              ByteArrayOutputStream baos = new ByteArrayOutputStream();
+              int len;
+              byte[] buffer = new byte[4096];
+              while ((len = is.read(buffer, 0, buffer.length)) != -1) {
+                  baos.write(buffer, 0, len);
+              }
+              
+              return baos;
+      } catch (IOException ioe) {
+        logger.error("IOException: " + ioe.getMessage());
+          } catch (AmazonServiceException ase) {
+            logger.info("sCaught an AmazonServiceException from GET requests, rejected reasons:");
+        logger.info("Error Message:    " + ase.getMessage());
+        logger.info("HTTP Status Code: " + ase.getStatusCode());
+        logger.info("AWS Error Code:   " + ase.getErrorCode());
+        logger.info("Error Type:       " + ase.getErrorType());
+        logger.info("Request ID:       " + ase.getRequestId());
+        throw ase;
+          } catch (AmazonClientException ace) {
+            logger.info("Caught an AmazonClientException: ");
+              logger.info("Error Message: " + ace.getMessage());
+              throw ace;
+          }
+      
+      return null;
     }
 }

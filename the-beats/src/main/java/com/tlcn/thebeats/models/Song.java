@@ -42,7 +42,7 @@ public class Song {
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	private Artist artist;
-	// private List<String> tags;
+	// private List<String> tag;
 	private String avatarImage;
 
 	public String getAvatarImage() {
